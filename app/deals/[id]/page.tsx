@@ -1,8 +1,8 @@
-import { supabase } from '../../../lib/supabase'; 
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import { MessageCircle, ArrowLeft, Store, Tag } from 'lucide-react';
 import Link from 'next/link';
-import ShareButton from '../../../components/ShareButton';
+import ShareButton from '@/components/ShareButton';
 
 export default async function DealDetails({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -25,7 +25,7 @@ export default async function DealDetails({ params }: { params: Promise<{ id: st
     <main className="min-h-screen bg-white">
       <nav className="p-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
         <Link href="/" className="flex items-center gap-2 text-blue-600 font-bold">
-          <ArrowLeft size={20} /> Retour aux promos
+          <ArrowLeft size={20} /> Retour
         </Link>
       </nav>
 
