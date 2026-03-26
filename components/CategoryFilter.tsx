@@ -1,14 +1,31 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function CategoryFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get('category') || 'Toutes';
+  
+  const [categories, setCategories] = useState<string[]>(['Toutes']);
 
-  // On définit les catégories ici pour éviter le "undefined"
-  const categories = ['Toutes', 'Alimentation', 'Mode', 'Électronique', 'Services', 'Beauté'];
+  useEffect(() => {
+    async function fetchCategories() {
+      // On récupère les catégories uniques présentes dans la table merchants
+      const { data, error } = await supabase
+        .from('merchants')
+        .select('category');
+
+      if (!error && data) {
+        // On extrait les noms, on enlève les doublons avec Set, et on trie
+        const uniqueCats = Array.from(new Set(data.map(m => m.category)));
+        setCategories(['Toutes', ...uniqueCats.sort()]);
+      }
+    }
+    fetchCategories();
+  }, []);
 
   const handleCategoryClick = (category: string) => {
     const params = new URLSearchParams(searchParams.toString());
