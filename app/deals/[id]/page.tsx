@@ -1,8 +1,8 @@
-import { supabase } from '@/lib/supabase'; // Vérifie : dossier "lib" et fichier "supabase.ts" (minuscules)
+import { supabase } from '../../../lib/supabase'; 
 import { notFound } from 'next/navigation';
 import { MessageCircle, ArrowLeft, Store, Tag } from 'lucide-react';
 import Link from 'next/link';
-import ShareButton from '@/components/ShareButton'; // Vérifie : dossier "components" et fichier "ShareButton.tsx" (S et B majuscules)
+import ShareButton from '../../../components/ShareButton';
 
 export default async function DealDetails({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
