@@ -1,47 +1,35 @@
 'use client';
 
-import DealCard from '@/components/DealCard';
+import DealCard from './DealCard'; // Import relatif direct
 import { useSearchParams } from 'next/navigation';
 
-interface Merchant {
-  name: string;
-  category: string;
-}
-
-interface Deal {
-  id: string;
-  title: string;
-  new_price: number;
-  old_price?: number;
-  image_url?: string;
-  merchants: Merchant;
-}
-
-export default function DealsList({ initialDeals }: { initialDeals: Deal[] }) {
+export default function DealsList({ initialDeals }: { initialDeals: any[] }) {
   const searchParams = useSearchParams();
+  
   const activeCategory = searchParams.get('category') || 'Toutes';
+  const query = searchParams.get('query')?.toLowerCase() || '';
 
-  // Filtrage des articles selon la catégorie sélectionnée
-  const filteredDeals = activeCategory === 'Toutes'
-    ? initialDeals
-    : initialDeals.filter(deal => deal.merchants.category === activeCategory);
+  // Logique de filtrage combinée
+  const filteredDeals = initialDeals.filter(deal => {
+    const matchesCategory = activeCategory === 'Toutes' || deal.merchants.category === activeCategory;
+    const matchesSearch = 
+      deal.title.toLowerCase().includes(query) || 
+      deal.merchants.name.toLowerCase().includes(query);
+    
+    return matchesCategory && matchesSearch;
+  });
 
   if (filteredDeals.length === 0) {
     return (
-      <div className="text-center py-20">
-        <p className="text-gray-400 font-medium">Aucune promotion disponible dans cette catégorie. 🛍️</p>
+      <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100">
+        <p className="text-gray-400 font-bold text-lg">Oups ! Aucune promo ne correspond à votre recherche. 🔍</p>
       </div>
     );
   }
 
   return (
-    /* LA CORRECTION : 
-       - 1 colonne sur mobile (default)
-       - 2 colonnes sur tablette (sm)
-       - 3 colonnes sur petit PC (md)
-       - 4 colonnes sur grand écran (lg)
-    */
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
+    /* Grille responsive : 1 col mobile, 2 sm, 3 md, 4 lg */
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {filteredDeals.map((deal) => (
         <DealCard key={deal.id} deal={deal} />
       ))}
